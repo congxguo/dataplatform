@@ -8,3 +8,7 @@ kubectl create namespace flink-operator --dry-run=client -o yaml | kubectl apply
 
 # Install the operator
 helm install flink-kubernetes-operator flink-operator-repo/flink-kubernetes-operator -n flink-operator
+
+kubectl create namespace flink
+
+kubectl apply -f rbac.yaml

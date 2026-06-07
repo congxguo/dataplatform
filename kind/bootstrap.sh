@@ -58,3 +58,6 @@ kubectl create namespace minio
 kubectl apply -f minio/storage.yaml
 kubectl apply -f minio/service.yaml
 kubectl apply -f minio/sts.yaml
+
+kubectl port-forward svc/minio 9000:9000 -n minio
+aws configure --profile minio
