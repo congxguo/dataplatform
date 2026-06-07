@@ -1,0 +1,35 @@
+# kind-config.yaml
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+nodes:
+- role: control-plane
+- role: worker
+  extraMounts:
+    - hostPath: ./dataplatform/kind/data/kind-worker-1/scylla
+      containerPath: /mnt/data/scylla
+    - hostPath: ./dataplatform/kind/data/kind-worker-1/minio
+      containerPath: /mnt/data/minio
+    - hostPath: ./dataplatform/kind/data/kind-worker-1/iceberg
+      containerPath: /mnt/data/iceberg
+    - hostPath: ./dataplatform/kind/data/kind-worker-1/kafka
+      containerPath: /mnt/data/kafka
+- role: worker
+  extraMounts:
+    - hostPath: ./dataplatform/kind/data/kind-worker-2/scylla
+      containerPath: /mnt/data/scylla
+    - hostPath: ./dataplatform/kind/data/kind-worker-2/minio
+      containerPath: /mnt/data/minio
+    - hostPath: ./dataplatform/kind/data/kind-worker-2/iceberg
+      containerPath: /mnt/data/iceberg
+    - hostPath: ./dataplatform/kind/data/kind-worker-2/kafka
+      containerPath: /mnt/data/kafka
+- role: worker
+  extraMounts:
+    - hostPath: ./dataplatform/kind/data/kind-worker-3/scylla
+      containerPath: /mnt/data/scylla
+    - hostPath: ./dataplatform/kind/data/kind-worker-3/minio
+      containerPath: /mnt/data/minio
+    - hostPath: ./dataplatform/kind/data/kind-worker-3/iceberg
+      containerPath: /mnt/data/iceberg
+    - hostPath: ./dataplatform/kind/data/kind-worker-3/kafka
+      containerPath: /mnt/data/kafka

@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sql-gateway
+  namespace: flink
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sql-gateway
+  template:
+    metadata:
+      labels:
+        app: sql-gateway
+    spec:
+      containers:
+        - name: sql-gateway
+          image: flink-iceberg:1.20
+          args:
+            - "sql-gateway"
+            - "--config"
+            - "/opt/flink/conf/sql-gateway.yaml"
+          ports:
+            - containerPort: 8083
+          volumeMounts:
+            - name: config-volume
+              mountPath: /opt/flink/conf/sql-gateway.yaml
+              subPath: sql-gateway.yaml
+      volumes:
+        - name: config-volume
+          configMap:
+            name: sql-gateway-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sql-gateway
+  namespace: flink
+spec:
+  selector:
+    app: sql-gateway
+  ports:
+    - name: http
+      port: 8083
+      targetPort: 8083
+

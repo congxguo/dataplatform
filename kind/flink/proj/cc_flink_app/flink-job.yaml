@@ -1,0 +1,43 @@
+# flink-job.yaml
+apiVersion: flink.apache.org/v1beta1
+kind: FlinkDeployment
+metadata:
+  name: data-stream-job
+spec:
+  image: flink:1.20 # Use your desired Flink version
+  serviceAccount: flink
+  flinkVersion: v1_20
+  podTemplate:
+    spec:
+      volumes:
+        - name: flink-job-jar
+          hostPath:
+            path: /data/flink-jars/
+            type: Directory
+        - name: flink-logs
+          hostPath:
+            path: /data/flink-logs/
+            type: Directory
+      containers:
+        - name: flink-main-container
+          volumeMounts:
+            - name: flink-job-jar
+              mountPath: /opt/flink/usrlib
+            - name: flink-logs
+              mountPath: /opt/flink/log
+  flinkConfiguration:
+    taskmanager.numberOfTaskSlots: "2"
+  jobManager:
+    resource:
+      memory: "1024m"
+      cpu: 1
+  taskManager:
+    resource:
+      memory: "1024m"
+      cpu: 1
+  job:
+    #jarURI: local:///opt/flink/usrlib/CcFlinkApp-1.0-SNAPSHOT.jar
+    jarURI: local:///opt/flink/usrlib/CcFlinkApp-1.0-SNAPSHOT.jar
+    entryClass: org.example.DataStreamJob
+    parallelism: 2
+    upgradeMode: stateless

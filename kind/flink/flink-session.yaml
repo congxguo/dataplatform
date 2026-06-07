@@ -1,0 +1,59 @@
+apiVersion: flink.apache.org/v1beta1
+kind: FlinkDeployment
+metadata:
+  name: flink-session
+  namespace: flink
+spec:
+  image: flink-iceberg:1.20
+  flinkVersion: v1_20
+  serviceAccount: default
+
+  # This is the correct mode for a session cluster
+  mode: standalone
+
+  jobManager:
+    replicas: 1
+    resource:
+      cpu: 1
+      memory: "2048m"
+    podTemplate:
+      spec:
+        containers:
+          - name: flink-main-container
+            image: flink-iceberg:1.20
+            env:
+            - name: AWS_ACCESS_KEY_ID
+              value: minioadmin
+            - name: AWS_SECRET_ACCESS_KEY
+              value: minioadmin
+            - name: AWS_REGION
+              value: us-east-1
+
+  taskManager:
+    replicas: 2
+    resource:
+      cpu: 1
+      memory: "4096m"
+    podTemplate:
+      spec:
+        containers:
+          - name: flink-main-container
+            image: flink-iceberg:1.20
+            env:
+            - name: AWS_ACCESS_KEY_ID
+              value: minioadmin
+            - name: AWS_SECRET_ACCESS_KEY
+              value: minioadmin
+            - name: AWS_REGION
+              value: us-east-1
+
+  flinkConfiguration:
+    taskmanager.numberOfTaskSlots: "2"
+    parallelism.default: "2"
+    rest.port: "8081"
+    s3.access-key: minioadmin
+    s3.secret-key: minioadmin
+    s3.endpoint: http://minio.minio.svc.cluster.local:9000
+    s3.path-style-access: "true"
+    client.region: us-east-1
+

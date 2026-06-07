@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: sql-gateway-config
+  namespace: flink
+data:
+  sql-gateway.yaml: |
+    execution:
+      planner: blink
+      type: streaming
+    server:
+      port: 8083
+    rest:
+      address: 0.0.0.0
+    deployment:
+      type: session
+      target: kubernetes-session
+      kubernetes-session:
+        cluster-id: flink-session
+        namespace: iceberg
+
