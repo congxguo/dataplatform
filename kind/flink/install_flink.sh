@@ -12,3 +12,6 @@ helm install flink-kubernetes-operator flink-operator-repo/flink-kubernetes-oper
 kubectl create namespace flink
 
 kubectl apply -f rbac.yaml
+
+
+aws s3api create-bucket --bucket flink --region us-east-1 --endpoint-url http://localhost:9000 --profile minio
