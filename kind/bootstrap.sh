@@ -19,6 +19,18 @@ mkdir -p data/kind-worker-1/iceberg
 mkdir -p data/kind-worker-2/iceberg
 mkdir -p data/kind-worker-3/iceberg
 
+mkdir -p data/kind-worker-1/nebula
+mkdir -p data/kind-worker-2/nebula
+mkdir -p data/kind-worker-3/nebula
+
+mkdir -p data/kind-worker-1/milvus
+mkdir -p data/kind-worker-2/milvus
+mkdir -p data/kind-worker-3/milvus
+
+mkdir -p data/kind-worker-1/es
+mkdir -p data/kind-worker-2/es
+mkdir -p data/kind-worker-3/es
+
 #### create kind clusters
 kind create cluster --config=kind-config.yaml --name=dataplatform
 kubectl wait --for=condition=Ready nodes --all --timeout=120s
@@ -53,4 +65,4 @@ helm repo add flink-kubernetes-operator https://downloads.apache.org/flink/flink
 helm repo update
 kubectl create namespace flink-operator
 helm install flink-operator flink-kubernetes-operator/flink-kubernetes-operator -n flink-operator
-kubectl apply -f flink/rbac.yaml
+#kubectl apply -f flink/rbac.yaml

@@ -13,6 +13,12 @@ nodes:
       containerPath: /mnt/data/iceberg
     - hostPath: ./dataplatform/kind/data/kind-worker-1/kafka
       containerPath: /mnt/data/kafka
+    - hostPath: ./dataplatform/kind/data/kind-worker-1/es
+      containerPath: /mnt/data/es
+    - hostPath: ./dataplatform/kind/data/kind-worker-1/nebula
+      containerPath: /mnt/data/nebula
+    - hostPath: ./dataplatform/kind/data/kind-worker-1/milvus
+      containerPath: /mnt/data/milvus
 - role: worker
   extraMounts:
     - hostPath: ./dataplatform/kind/data/kind-worker-2/scylla
@@ -23,6 +29,12 @@ nodes:
       containerPath: /mnt/data/iceberg
     - hostPath: ./dataplatform/kind/data/kind-worker-2/kafka
       containerPath: /mnt/data/kafka
+    - hostPath: ./dataplatform/kind/data/kind-worker-2/es
+      containerPath: /mnt/data/es
+    - hostPath: ./dataplatform/kind/data/kind-worker-2/nebula
+      containerPath: /mnt/data/nebula
+    - hostPath: ./dataplatform/kind/data/kind-worker-2/milvus
+      containerPath: /mnt/data/milvus
 - role: worker
   extraMounts:
     - hostPath: ./dataplatform/kind/data/kind-worker-3/scylla
@@ -33,3 +45,9 @@ nodes:
       containerPath: /mnt/data/iceberg
     - hostPath: ./dataplatform/kind/data/kind-worker-3/kafka
       containerPath: /mnt/data/kafka
+    - hostPath: ./dataplatform/kind/data/kind-worker-3/es
+      containerPath: /mnt/data/es
+    - hostPath: ./dataplatform/kind/data/kind-worker-3/nebula
+      containerPath: /mnt/data/nebula
+    - hostPath: ./dataplatform/kind/data/kind-worker-3/milvus
+      containerPath: /mnt/data/milvus
