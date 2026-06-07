@@ -56,13 +56,5 @@ helm install cert-manager jetstack/cert-manager \
 #### install minio
 kubectl create namespace minio
 kubectl apply -f minio/storage.yaml
-kubectl apply -f minio/headless.yaml
+kubectl apply -f minio/service.yaml
 kubectl apply -f minio/sts.yaml
-
-
-#### install flink-operator
-helm repo add flink-kubernetes-operator https://downloads.apache.org/flink/flink-kubernetes-operator-1.10.0/
-helm repo update
-kubectl create namespace flink-operator
-helm install flink-operator flink-kubernetes-operator/flink-kubernetes-operator -n flink-operator
-#kubectl apply -f flink/rbac.yaml
