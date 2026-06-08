@@ -35,9 +35,17 @@ mkdir -p data/kind-worker-1/clickhouse
 mkdir -p data/kind-worker-2/clickhouse
 mkdir -p data/kind-worker-3/clickhouse
 
+mkdir -p data/kind-worker-1/es
+mkdir -p data/kind-worker-2/es
+mkdir -p data/kind-worker-3/es
+
 mkdir -p data/kind-worker-1/iceberg
 mkdir -p data/kind-worker-2/iceberg
 mkdir -p data/kind-worker-3/iceberg
+
+mkdir -p data/kind-worker-1/airflow
+mkdir -p data/kind-worker-2/airflow
+mkdir -p data/kind-worker-3/aifflow
 
 mkdir -p data/kind-worker-1/common
 mkdir -p data/kind-worker-2/common

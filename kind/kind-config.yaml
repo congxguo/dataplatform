@@ -5,13 +5,13 @@ nodes:
 - role: control-plane
 - role: worker
   extraMounts:
-    - hostPath: /Users/cong.guo/Project/kind/data/kind-worker-1
+    - hostPath: ./data/kind-worker-1
       containerPath: /mnt/data
 - role: worker
   extraMounts:
-    - hostPath: /Users/cong.guo/Project/kind/data/kind-worker-2
+    - hostPath: ./data/kind-worker-2
       containerPath: /mnt/data
 - role: worker
   extraMounts:
-    - hostPath: /Users/cong.guo/Project/kind/data/kind-worker-3
+    - hostPath: ./data/kind-worker-3
       containerPath: /mnt/data
