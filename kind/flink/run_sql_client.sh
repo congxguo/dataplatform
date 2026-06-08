@@ -2,7 +2,7 @@ kubectl apply -f flink-session.yaml
 
 k exec -it flink-session-xxx -n flink -- bash
 
-./bin/sql-client
+./bin/sql-client.sh
 
 CREATE CATALOG iceberg_catalog WITH (
   'type'='iceberg',
