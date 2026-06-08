@@ -7,4 +7,5 @@ helm install strimzi-kafka-operator strimzi/strimzi-kafka-operator --namespace k
 
 
 kubectl apply -f storage.yaml
+kubectl apply -f nodepool.yaml
 kubectl apply -f kafka-main.yaml
