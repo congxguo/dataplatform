@@ -24,7 +24,7 @@ from kafka import KafkaProducer
 
 # ── Configuration ─────────────────────────────────────────────────────────────
 
-KAFKA_BOOTSTRAP = "localhost:9092"   # adjust to your kind-cluster NodePort / port-forward
+KAFKA_BOOTSTRAP = "kafka-main-kafka-bootstrap.kafka.svc.cluster.local:9092"   # adjust to your kind-cluster NodePort / port-forward
 TOPIC            = "ads-events"
 DEFAULT_RATE     = 10                # messages per second
 DEFAULT_DURATION = None              # None = run forever

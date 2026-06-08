@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: python-toolbox
+  namespace: client
+spec:
+  serviceAccountName: default
+  containers:
+    - name: python
+      image: python:3.11-slim
+      command: ["sleep", "infinity"]
+      env:
+        - name: PYTHONUNBUFFERED
+          value: "1"
+      # Optional: install curl, ping, etc. on startup
+      # command: ["sh", "-c", "apt-get update && apt-get install -y curl iputils-ping && sleep infinity"]
+  restartPolicy: Always

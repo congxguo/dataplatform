@@ -13,7 +13,7 @@
 set -euo pipefail
 
 # ── Cluster-local service addresses (via port-forward or NodePort) ─────────────
-KAFKA_HOST="localhost:9092"
+KAFKA_HOST="kafka-main-kafka-bootstrap.kafka.svc.cluster.local:9092"
 SCYLLA_HOST="localhost:9042"
 FLINK_REST="http://localhost:8081"
 KAFKA_POD_LABEL="app=kafka"          # adjust to your helm chart label
@@ -64,7 +64,7 @@ cmd_setup() {
         "$(kubectl get pod -n "$KAFKA_NAMESPACE" -l "$KAFKA_POD_LABEL" \
             -o jsonpath='{.items[0].metadata.name}')" \
         -- kafka-topics.sh \
-            --bootstrap-server localhost:9092 \
+            --bootstrap-server kafka-main-kafka-bootstrap.kafka.svc.cluster.local:9092 \
             --create \
             --if-not-exists \
             --topic ads-events \
