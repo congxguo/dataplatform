@@ -3,9 +3,7 @@ helm repo update
 
 kubectl create namespace kafka
 
-helm install strimzi-kafka-operator strimzi/strimzi-kafka-operator \
-  --namespace kafka \
-  --set watchNamespaces="{kafka}"
+helm install strimzi-kafka-operator strimzi/strimzi-kafka-operator --namespace kafka --set watchNamespaces="{kafka}"
 
 
 kubectl apply -f storage.yaml
