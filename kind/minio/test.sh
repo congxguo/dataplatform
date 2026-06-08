@@ -1,2 +1,0 @@
-aws s3api create-bucket --bucket test --region us-east-1 --endpoint-url http://localhost:9000 --profile minio
-aws s3 cp testfile s3://test/testfile --region us-east-1 --endpoint-url http://localhost:9000 --profile minio

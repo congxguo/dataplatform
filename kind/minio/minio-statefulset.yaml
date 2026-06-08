@@ -40,5 +40,5 @@ spec:
       accessModes: [ "ReadWriteOnce" ]
       resources:
         requests:
-          storage: 20Gi
-      storageClassName: ""
+          storage: 10Gi
+      storageClassName: hostpath-minio

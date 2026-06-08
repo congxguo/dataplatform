@@ -1,14 +1,23 @@
+# StorageClass for minio
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: hostpath-minio
+  namespace: minio
+provisioner: kubernetes.io/no-provisioner
+volumeBindingMode: WaitForFirstConsumer
+---
 apiVersion: v1
 kind: PersistentVolume
 metadata:
   name: minio-pv-0
-  labels:
-    app: minio-storage
+  namespace: minio
 spec:
   capacity:
-    storage: 20Gi
+    storage: 10Gi
   accessModes:
     - ReadWriteOnce
+  storageClassName: hostpath-minio
   hostPath:
     path: /mnt/data/minio
   nodeAffinity:
@@ -24,13 +33,13 @@ apiVersion: v1
 kind: PersistentVolume
 metadata:
   name: minio-pv-1
-  labels:
-    app: minio-storage
+  namespace: minio
 spec:
   capacity:
-    storage: 20Gi
+    storage: 10Gi
   accessModes:
     - ReadWriteOnce
+  storageClassName: hostpath-minio
   hostPath:
     path: /mnt/data/minio
   nodeAffinity:
@@ -46,13 +55,13 @@ apiVersion: v1
 kind: PersistentVolume
 metadata:
   name: minio-pv-2
-  labels:
-    app: minio-storage
+  namespace: minio
 spec:
   capacity:
-    storage: 20Gi
+    storage: 10Gi
   accessModes:
     - ReadWriteOnce
+  storageClassName: hostpath-minio
   hostPath:
     path: /mnt/data/minio
   nodeAffinity:
@@ -63,4 +72,3 @@ spec:
           operator: In
           values:
           - "3"
-
