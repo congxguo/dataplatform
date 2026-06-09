@@ -12,3 +12,10 @@ worker:
     enabled: true
     size: 20Gi
     storageClass: trino-storage
+
+additionalCatalogs:
+  iceberg_catalog: |
+    connector.name=iceberg
+    iceberg.catalog.type=rest
+    iceberg.rest-catalog.uri=http://iceberg-rest-catalog.iceberg.svc.cluster.local:8181
+    iceberg.rest-catalog.warehouse=s3://iceberg-warehouse
