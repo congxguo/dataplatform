@@ -1,0 +1,76 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: trino-storage
+provisioner: kubernetes.io/no-provisioner
+volumeBindingMode: WaitForFirstConsumer
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: trino-pv-0
+  labels:
+    app: trino
+spec:
+  capacity:
+    storage: 20Gi
+  storageClassName: trino-storage
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: /mnt/data/trino
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: node-no
+          operator: In
+          values:
+          - "1"
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: trino-pv-1
+  labels:
+    app: trino
+spec:
+  capacity:
+    storage: 20Gi
+  storageClassName: trino-storage
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: /mnt/data/trino
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: node-no
+          operator: In
+          values:
+          - "2"
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: trino-pv-2
+  labels:
+    app: trino
+spec:
+  capacity:
+    storage: 20Gi
+  storageClassName: trino-storage
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: /mnt/data/trino
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: node-no
+          operator: In
+          values:
+          - "3"
+

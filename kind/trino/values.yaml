@@ -1,0 +1,14 @@
+coordinator:
+  persistence:
+    enabled: true
+    size: 20Gi
+    storageClass: trino-storage
+
+server:
+  workers: 2
+
+worker:
+  persistence:
+    enabled: true
+    size: 20Gi
+    storageClass: trino-storage
