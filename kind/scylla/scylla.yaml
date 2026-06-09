@@ -1,0 +1,41 @@
+apiVersion: scylla.scylladb.com/v1
+kind: ScyllaCluster
+metadata:
+  name: scylla-local
+  namespace: scylla
+spec:
+  agentRepository: docker.io/scylladb/scylla-manager-agent
+  agentVersion: 3.7.0
+  automaticOrphanedNodeCleanup: true
+  datacenter:
+    name: ldc1
+    racks:
+    - agentResources:
+        requests:
+          cpu: 50m
+          memory: 10M
+      members: 3
+      name: a
+      resources:
+        limits:
+          cpu: 500m
+          memory: 1Gi
+        requests:
+          cpu: 500m
+          memory: 1Gi
+      scyllaConfig: scylla-local-config
+      storage:
+        capacity: 1Gi
+        storageClassName: hostpath-sc
+  developerMode: true
+  # repository: 165463520094.dkr.ecr.ap-northeast-1.amazonaws.com/realtime-streaming/scylladb
+  repository: scylladb/scylla
+  version: 6.2.2
+  exposeOptions:
+    broadcastOptions:
+      clients:
+        type: PodIP
+      nodes:
+        type: PodIP
+    nodeService:
+      type: Headless

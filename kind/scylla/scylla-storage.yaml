@@ -1,0 +1,80 @@
+# StorageClass definition (no dynamic provisioner)
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: hostpath-sc
+  namespace: scylla
+provisioner: kubernetes.io/no-provisioner
+volumeBindingMode: WaitForFirstConsumer
+---
+# PersistentVolume pointing to /mnt/data/scylla
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: worker-pv
+  namespace: scylla
+spec:
+  capacity:
+    storage: 5Gi
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: hostpath-sc
+  hostPath:
+    path: /mnt/data/scylla
+    type: DirectoryOrCreate
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: node-no
+          operator: In
+          values:
+          - "1"
+---
+# PersistentVolume pointing to /mnt/data/scylla
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: worker-pv-1
+  namespace: scylla
+spec:
+  capacity:
+    storage: 5Gi
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: hostpath-sc
+  hostPath:
+    path: /mnt/data/scylla
+    type: DirectoryOrCreate
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: node-no
+          operator: In
+          values:
+          - "2"
+---
+# PersistentVolume pointing to /mnt/data/scylla
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: worker-pv-2
+  namespace: scylla
+spec:
+  capacity:
+    storage: 5Gi
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: hostpath-sc
+  hostPath:
+    path: /mnt/data/scylla
+    type: DirectoryOrCreate
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: node-no
+          operator: In
+          values:
+          - "3"
