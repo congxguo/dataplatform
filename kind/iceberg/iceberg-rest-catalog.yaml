@@ -14,37 +14,57 @@ spec:
         app: iceberg-rest-catalog
     spec:
       containers:
-      - name: catalog
-        image: apache/iceberg-rest-fixture:latest
+      - name: iceberg-rest
+        image: tabulario/iceberg-rest:latest
         ports:
         - containerPort: 8181
         env:
+        # --- Backend catalog for the REST server (must NOT be RESTCatalog) ---
+        - name: CATALOG_CATALOG__IMPL
+          value: org.apache.iceberg.jdbc.JdbcCatalog
+        
+        - name: CATALOG_URI
+          value: jdbc:postgresql://postgres:5432/iceberg
+
+        - name: CATALOG_JDBC_USER
+          value: iceberg
+
+        - name: CATALOG_JDBC_PASSWORD
+          value: iceberg
+
         - name: CATALOG_WAREHOUSE
-          value: "s3://iceberg-warehouse"
+          value: s3://iceberg-warehouse
+
         - name: CATALOG_IO__IMPL
-          value: "org.apache.iceberg.aws.s3.S3FileIO"
-        - name: AWS_ACCESS_KEY_ID
-          value: "minioadmin"
-        - name: AWS_SECRET_ACCESS_KEY
-          value: "minioadmin"
-        - name: AWS_REGION
-          value: "us-east-1"
-        - name: CATALOG_S3_REGION
-          value: "us-east-1"
-        - name: CATALOG_S3_ACCESS_KEY_ID
-          value: "minioadmin"
-        - name: CATALOG_S3_SECRET_ACCESS_KEY
-          value: "minioadmin"
+          value: org.apache.iceberg.aws.s3.S3FileIO
+
+        #- name: CATALOG_IO__S3__ENDPOINT
+        - name: CATALOG_S3_ENDPOINT
+          value: http://minio.minio.svc.cluster.local:9000
+
         - name: CATALOG_S3_PATH__STYLE__ACCESS
           value: "true"
-        - name: CATALOG_S3_PATH_STYLE_ACCESS
-          value: "true"
-        - name: CATALOG_S3_ENDPOINT
-          value: "http://minio.minio.svc.cluster.local:9000"
-        - name: ICEBERG_S3_PATH_STYLE_ACCESS
-          value: "true"
-        - name: ICEBERG_S3_ENDPOINT
-          value: "http://minio.minio.svc.cluster.local:9000"
+
+        - name: AWS_ACCESS_KEY_ID
+          value: minioadmin
+
+        - name: AWS_SECRET_ACCESS_KEY
+          value: minioadmin
+
+        - name: AWS_REGION
+          value: us-east-1
+
+        #- name: CATALOG_IO__S3__ACCESS_KEY_ID
+        #  value: minioadmin
+
+        #- name: CATALOG_IO__S3__SECRET_ACCESS_KEY
+        #  value: minioadmin
+
+        #- name: CATALOG_IO__S3__PATH_STYLE_ACCESS
+        #  value: "true"
+
+        #- name: AWS_REGION
+        #  value: us-east-1
 ---
 apiVersion: v1
 kind: Service
@@ -59,4 +79,3 @@ spec:
       nodePort: 30181
   selector:
     app: iceberg-rest-catalog
-

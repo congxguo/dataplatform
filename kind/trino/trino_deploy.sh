@@ -9,4 +9,4 @@ helm install trino trino/trino \
   --create-namespace \
   -f values.yaml
 
-kubectl port-forward svc/trino 8080:8080
+kubectl port-forward svc/trino 8080:8080 -n trino
