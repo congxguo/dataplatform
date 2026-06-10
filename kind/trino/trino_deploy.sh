@@ -10,3 +10,6 @@ helm install trino trino/trino \
   -f values.yaml
 
 kubectl port-forward svc/trino 8080:8080 -n trino
+
+
+# helm upgrade trino trino/trino -n trino -f values.yaml
