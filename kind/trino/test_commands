@@ -4,4 +4,4 @@ trino --execute "SELECT 1"
 SHOW SCHEMAS FROM iceberg_catalog;
 USE iceberg_catalog.demo_db;
 SHOW TABLES FROM iceberg_catalog.demo_db;
-SELECT * FROM iceberg_catalog.demo_db.my_table;
+SELECT * FROM iceberg_catalog.demo_db.users;
