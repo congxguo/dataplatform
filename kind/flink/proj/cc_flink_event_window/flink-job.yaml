@@ -41,6 +41,6 @@ spec:
       cpu: 1
   job:
     jarURI: s3://flink/jars/CcFlinkEventWindow-1.0-SNAPSHOT.jar
-    entryClass: org.example.EventTimeTumblingWindowJob
+    entryClass: org.example.EventTimeSlidingWindowJob
     parallelism: 2
     upgradeMode: stateless

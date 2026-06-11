@@ -18,7 +18,7 @@ public class EventTimeSlidingWindowJob {
         StreamExecutionEnvironment env =
                 StreamExecutionEnvironment.getExecutionEnvironment();
 
-        env.setParallelism(1);
+        // env.setParallelism(1);
 
         // ─────────────────────────────────────────────
         // 1. Source (replace with Kafka in your setup)
@@ -121,7 +121,9 @@ public class EventTimeSlidingWindowJob {
                                             sum += e.revenue;
                                             count++;
                                             System.out.println(
-                                                    "  included=" + e);
+                                                    "  included=" + e
+                                                    + " event_time=" + Instant.ofEpochMilli(e.event_time)
+                                                    + " wall=" + Instant.ofEpochMilli(e.event_time));
                                         }
 
                                         out.collect(
