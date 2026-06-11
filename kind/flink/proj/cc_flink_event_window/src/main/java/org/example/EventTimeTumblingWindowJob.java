@@ -135,7 +135,8 @@ public class EventTimeTumblingWindowJob {
                                             count++;
                                             System.out.println(
                                                     "  included=" + e
-                                                    + " event_time=" + Instant.ofEpochMilli(e.event_time));
+                                                    + " event_time=" + Instant.ofEpochMilli(e.event_time)
+                                                    );
                                         }
 
                                         out.collect(

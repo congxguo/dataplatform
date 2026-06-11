@@ -6,10 +6,13 @@ import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.streaming.api.windowing.assigners.SlidingEventTimeWindows;
 import org.apache.flink.streaming.api.windowing.time.Time;
 import org.apache.flink.streaming.api.functions.windowing.ProcessWindowFunction;
+import org.apache.flink.streaming.api.functions.source.SourceFunction;
 import org.apache.flink.util.Collector;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.Random;
+import java.util.UUID;
 
 public class EventTimeSlidingWindowJob {
 
@@ -21,29 +24,45 @@ public class EventTimeSlidingWindowJob {
         // env.setParallelism(1);
 
         // ─────────────────────────────────────────────
-        // 1. Source (replace with Kafka in your setup)
+        // 1. Source – generates random events every 10s
         //
         // Window size  = 60s, slide = 30s → each event
         // can appear in up to 2 overlapping windows.
         // ─────────────────────────────────────────────
-        DataStream<Event> stream = env
-                .fromElements(
-                        // window [0s, 60s)
-                        new Event("1", "c1", "u1", "click", 1.0, 10000L),
-                        new Event("2", "c1", "u1", "click", 2.0, 20000L),
+        DataStream<Event> stream = env.addSource(new SourceFunction<Event>() {
 
-                        // out-of-order event (arrives late, still within watermark tolerance)
-                        new Event("3", "c1", "u1", "click", 3.0, 15000L),
+            private volatile boolean running = true;
 
-                        // falls in [0s,60s) and [30s,90s)
-                        new Event("4", "c1", "u1", "click", 4.0, 50000L),
+            private final String[] CAMPAIGNS   = {"c1", "c2", "c3"};
+            private final String[] USERS       = {"u1", "u2", "u3", "u4"};
+            private final String[] EVENT_TYPES = {"click", "view", "purchase"};
 
-                        // falls in [30s,90s) only
-                        new Event("5", "c1", "u1", "click", 5.0, 70000L),
+            @Override
+            public void run(SourceContext<Event> ctx) throws Exception {
+                Random rnd = new Random();
+                long seq = 0;
 
-                        // advances watermark far enough to close earlier windows
-                        new Event("6", "c1", "u1", "click", 6.0, 130000L)
-                );
+                while (running) {
+                    String id         = UUID.randomUUID().toString().substring(0, 8);
+                    String campaign   = CAMPAIGNS[rnd.nextInt(CAMPAIGNS.length)];
+                    String user       = USERS[rnd.nextInt(USERS.length)];
+                    String type       = EVENT_TYPES[rnd.nextInt(EVENT_TYPES.length)];
+                    double revenue    = Math.round(rnd.nextDouble() * 100.0 * 100.0) / 100.0;
+                    long   eventTime  = System.currentTimeMillis();
+
+                    Event e = new Event(id, campaign, user, type, revenue, eventTime);
+                    ctx.collect(e);
+                    System.out.println("[EMIT #" + (++seq) + "] " + e);
+
+                    Thread.sleep(10_000);  // emit one event every 10s
+                }
+            }
+
+            @Override
+            public void cancel() {
+                running = false;
+            }
+        });
 
         // ─────────────────────────────────────────────
         // 2. Watermark Strategy
@@ -123,7 +142,7 @@ public class EventTimeSlidingWindowJob {
                                             System.out.println(
                                                     "  included=" + e
                                                     + " event_time=" + Instant.ofEpochMilli(e.event_time)
-                                                    + " wall=" + Instant.ofEpochMilli(e.event_time));
+                                                    );
                                         }
 
                                         out.collect(
