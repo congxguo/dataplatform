@@ -21,7 +21,7 @@ public class EventTimeTumblingWindowJob {
         StreamExecutionEnvironment env =
                 StreamExecutionEnvironment.getExecutionEnvironment();
 
-        env.setParallelism(1);
+        // env.setParallelism(1);
 
         // ─────────────────────────────────────────────
         // 1. Source – generates random events every 10s
