@@ -1,1 +1,3 @@
 /Users/cong.guo/Project/dataplatform/kind/flink/proj/cc_flink_scylla_sink/src/main/java/org/example/scylla/ScyllaSinkConfig.java
+/Users/cong.guo/Project/dataplatform/kind/flink/proj/cc_flink_scylla_sink/src/main/java/org/example/scylla/ScyllaSink.java
+/Users/cong.guo/Project/dataplatform/kind/flink/proj/cc_flink_scylla_sink/src/main/java/org/example/scylla/example/AdEventScyllaSink.java
