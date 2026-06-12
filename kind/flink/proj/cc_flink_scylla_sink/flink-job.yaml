@@ -1,0 +1,47 @@
+# flink-job.yaml
+apiVersion: flink.apache.org/v1beta1
+kind: FlinkDeployment
+metadata:
+  name: kafka-scylla-job
+  namespace: flink
+spec:
+  #image: flink-s3:1.20
+  image: flink-iceberg:1.20
+  #imagePullPolicy: Always
+  serviceAccount: flink
+  flinkVersion: v1_20
+  flinkConfiguration:
+    fs.s3a.endpoint: "http://minio.minio.svc.cluster.local:9000"
+    fs.s3a.access.key: "minioadmin"
+    fs.s3a.secret.key: "minioadmin"
+    fs.s3a.path.style.access: "true"
+    classloader.resolve-order: parent-first
+    execution.shutdown-on-application-finish: "true"
+    restart-strategy: "none"
+    # This prevents Flink from hiding Hadoop classes from the Iceberg connector
+    classloader.parent-first-check.origins: "org.apache.hadoop,org.apache.iceberg"
+    taskmanager.numberOfTaskSlots: "1" 
+  podTemplate:
+      spec:
+        containers:
+          - name: flink-main-container
+            env:
+              - name: AWS_ACCESS_KEY_ID
+                value: "minioadmin"
+              - name: AWS_SECRET_ACCESS_KEY
+                value: "minioadmin"
+              - name: AWS_REGION
+                value: "us-east-1"
+  jobManager:
+    resource:
+      memory: "2048m"
+      cpu: 1
+  taskManager:
+    resource:
+      memory: "2048m"
+      cpu: 1
+  job:
+    jarURI: s3://flink/jars/flink-kafka-scylla-sink-job.jar
+    entryClass: org.example.KafkaScyllaSinkJob
+    parallelism: 3
+    upgradeMode: stateless

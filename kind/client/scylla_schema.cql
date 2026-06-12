@@ -6,6 +6,7 @@ CREATE KEYSPACE IF NOT EXISTS ads
         'class': 'NetworkTopologyStrategy',
         'replication_factor': 1   -- bump to 3 for production
     }
+    AND tablets = {'enabled': false}
     AND durable_writes = true;
 
 USE ads;

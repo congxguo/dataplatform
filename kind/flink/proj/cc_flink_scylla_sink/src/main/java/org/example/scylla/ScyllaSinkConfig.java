@@ -9,7 +9,7 @@ import java.io.Serializable;
  * <pre>{@code
  * ScyllaSinkConfig config = ScyllaSinkConfig.builder()
  *     .contactPoints("scylla-host", 9042)
- *     .localDatacenter("datacenter1")
+ *     .localDatacenter("ldc1")
  *     .keyspace("ads")
  *     .batchSize(100)
  *     .flushIntervalMs(500)

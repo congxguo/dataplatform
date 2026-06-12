@@ -11,6 +11,8 @@ import org.apache.flink.streaming.api.windowing.assigners.SlidingEventTimeWindow
 import org.apache.flink.streaming.api.windowing.time.Time;
 import org.apache.flink.streaming.api.windowing.windows.TimeWindow;
 import org.apache.flink.util.Collector;
+import org.example.scylla.ScyllaSinkConfig;
+import org.example.scylla.example.AdEventScyllaSink;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -20,27 +22,40 @@ import java.time.Duration;
 import java.time.Instant;
 
 /**
- * Consumes the "ads-events" Kafka topic and computes per-campaign aggregations
- * using a sliding event-time window.
+ * Extends the sliding-window job with a ScyllaDB sink.
  *
- * Window config:
- *   size  = 60 s  — how long each window spans
- *   slide = 30 s  — how often a new window starts
+ * Pipeline:
  *
- * Because size / slide = 2, every event appears in up to 2 overlapping windows:
- *   [0 s,  60 s), [30 s,  90 s), [60 s, 120 s), …
- *
- * Each window fires and emits:
- *   campaign, window range, event count, per-type counts, total revenue.
- *
- * Watermark: bounded out-of-orderness (5 s) — tolerates minor Kafka delivery lag.
+ *   Kafka (ads-events)
+ *       │
+ *       ▼
+ *   Watermark assignment (bounded out-of-orderness 5 s)
+ *       │
+ *       ├──► AdEventScyllaSink ──► ads.ad_events (ScyllaDB)
+ *       │      raw events, batched 100 / 500 ms
+ *       │
+ *       └──► keyBy(campaign_id)
+ *                │
+ *                ▼
+ *            SlidingEventTimeWindow (size=60 s, slide=30 s)
+ *                │
+ *                ▼
+ *            per-campaign aggregation (count, revenue, type breakdown)
+ *                │
+ *                ▼
+ *            print() — TaskManager stdout
  */
-public class KafkaEventTimeSlidingWindowJob {
+public class KafkaScyllaSinkJob {
 
     private static final String KAFKA_BOOTSTRAP =
             "kafka-main-kafka-bootstrap.kafka.svc.cluster.local:9092";
     private static final String TOPIC    = "ads-events";
-    private static final String GROUP_ID = "flink-kafka-sliding-window";
+    private static final String GROUP_ID = "flink-kafka-scylla-sink";
+
+    // ScyllaDB operator creates a client service named <cluster-name>-client
+    private static final String SCYLLA_HOST = "scylla-local-client.scylla.svc.cluster.local";
+    private static final String SCYLLA_DC   = "ldc1";
+    private static final String SCYLLA_KS   = "ads";
 
     public static void main(String[] args) throws Exception {
 
@@ -77,7 +92,6 @@ public class KafkaEventTimeSlidingWindowJob {
                 })
                 .build();
 
-        // fromSource with noWatermarks — we assign watermarks explicitly below.
         DataStream<AdEvent> stream = env.fromSource(
                 source,
                 WatermarkStrategy.noWatermarks(),
@@ -101,7 +115,29 @@ public class KafkaEventTimeSlidingWindowJob {
         DataStream<AdEvent> withWm = stream.assignTimestampsAndWatermarks(wm);
 
         // ─────────────────────────────────────────────
-        // 3. Sliding Event-Time Window
+        // 3. ScyllaDB Sink — persist raw events
+        //
+        // Raw AdEvents are written to ads.ad_events
+        // before windowing, so every event is stored
+        // regardless of whether it falls in a window.
+        //
+        // Batched: flush every 100 records or 500 ms,
+        // whichever comes first (at-least-once).
+        // ─────────────────────────────────────────────
+        ScyllaSinkConfig scyllaConfig = ScyllaSinkConfig.builder()
+                .contactPoints(SCYLLA_HOST, 9042)
+                .localDatacenter(SCYLLA_DC)
+                .keyspace(SCYLLA_KS)
+                .username("cassandra")
+                .password("cassandra")
+                .batchSize(100)
+                .flushIntervalMs(500)
+                .build();
+
+        withWm.addSink(new AdEventScyllaSink(scyllaConfig));
+
+        // ─────────────────────────────────────────────
+        // 4. Sliding Event-Time Window
         //    size  = 60 s
         //    slide = 30 s
         //
@@ -164,10 +200,10 @@ public class KafkaEventTimeSlidingWindowJob {
                         });
 
         // ─────────────────────────────────────────────
-        // 4. Output — printed to TaskManager stdout/logs
+        // 5. Output — printed to TaskManager stdout/logs
         // ─────────────────────────────────────────────
         result.print();
 
-        env.execute("Kafka Event Time Sliding Window Job");
+        env.execute("Kafka Scylla Sink Job");
     }
 }

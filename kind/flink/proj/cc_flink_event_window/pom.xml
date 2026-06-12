@@ -314,6 +314,42 @@ under the License.
                    </configuration>
                 </execution>
 
+                <!-- Kafka Scylla Sink Job JAR -->
+                <execution>
+                   <id>kafka-scylla-sink-job</id>
+                   <phase>package</phase>
+                   <goals>
+                      <goal>shade</goal>
+                   </goals>
+                   <configuration>
+                      <finalName>flink-kafka-scylla-sink-job</finalName>
+                      <createDependencyReducedPom>false</createDependencyReducedPom>
+                      <artifactSet>
+                         <excludes>
+                            <exclude>com.google.code.findbugs:jsr305</exclude>
+                            <exclude>org.slf4j:*</exclude>
+                            <exclude>org.apache.logging.log4j:*</exclude>
+                         </excludes>
+                      </artifactSet>
+                      <filters>
+                         <filter>
+                            <artifact>*:*</artifact>
+                            <excludes>
+                               <exclude>META-INF/*.SF</exclude>
+                               <exclude>META-INF/*.DSA</exclude>
+                               <exclude>META-INF/*.RSA</exclude>
+                            </excludes>
+                         </filter>
+                      </filters>
+                      <transformers>
+                         <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
+                         <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                            <mainClass>org.example.KafkaScyllaSinkJob</mainClass>
+                         </transformer>
+                      </transformers>
+                   </configuration>
+                </execution>
+
                 <!-- Kafka Event Time Sliding Window Job JAR -->
                 <execution>
                    <id>kafka-sliding-window-job</id>
