@@ -15,6 +15,9 @@ import org.apache.flink.util.Collector;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import org.example.scylla.ScyllaSinkConfig;
+import org.example.scylla.example.AdEventScyllaSink;
+
 import java.io.IOException;
 import java.time.Duration;
 import java.time.Instant;
@@ -99,6 +102,23 @@ public class KafkaEventTimeSlidingWindowJob {
                         .withIdleness(Duration.ofSeconds(30));
 
         DataStream<AdEvent> withWm = stream.assignTimestampsAndWatermarks(wm);
+
+        // ─────────────────────────────────────────────
+        // 3a. ScyllaDB Sink — persist raw events
+        //
+        // Raw AdEvents are written to ads.ad_events
+        // before windowing. Batched at 100 records or
+        // 500 ms, whichever comes first.
+        // ─────────────────────────────────────────────
+        ScyllaSinkConfig scyllaConfig = ScyllaSinkConfig.builder()
+                .contactPoints("scylla-client.scylla.svc.cluster.local", 9042)
+                .localDatacenter("datacenter1")
+                .keyspace("ads")
+                .batchSize(100)
+                .flushIntervalMs(500)
+                .build();
+
+        withWm.addSink(new AdEventScyllaSink(scyllaConfig));
 
         // ─────────────────────────────────────────────
         // 3. Sliding Event-Time Window
