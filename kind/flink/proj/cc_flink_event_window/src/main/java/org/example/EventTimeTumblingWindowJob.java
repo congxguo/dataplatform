@@ -152,7 +152,7 @@ public class EventTimeTumblingWindowJob {
                         );
 
         // ─────────────────────────────────────────────
-        // 5. Output
+        // 5. Output - this is like sink
         // ─────────────────────────────────────────────
         result.print();
 
