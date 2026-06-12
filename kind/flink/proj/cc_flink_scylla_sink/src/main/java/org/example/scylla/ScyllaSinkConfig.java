@@ -131,6 +131,9 @@ public class ScyllaSinkConfig implements Serializable {
             if (batchSize < 1) {
                 throw new IllegalArgumentException("batchSize must be >= 1");
             }
+            if (username != null && password == null) {
+                throw new IllegalArgumentException("password is required when username is set");
+            }
             return new ScyllaSinkConfig(this);
         }
     }

@@ -115,7 +115,11 @@ public abstract class ScyllaSink<T> extends RichSinkFunction<T> {
     public final void close() throws Exception {
         if (flushScheduler != null) {
             flushScheduler.shutdown();
-            flushScheduler.awaitTermination(5, TimeUnit.SECONDS);
+            boolean terminated = flushScheduler.awaitTermination(5, TimeUnit.SECONDS);
+            if (!terminated) {
+                flushScheduler.shutdownNow();
+                LOG.warn("ScyllaSink flush scheduler did not terminate within 5 s; forcing shutdown");
+            }
         }
         if (buffer != null) {
             synchronized (this) {
