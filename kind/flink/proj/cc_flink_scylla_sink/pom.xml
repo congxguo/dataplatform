@@ -66,6 +66,15 @@ with the License. You may obtain a copy of the License at
             <version>4.8.1</version>
             <scope>test</scope>
         </dependency>
+
+        <!-- Only needed to compile the AdEventScyllaSink example.
+             The consuming job JAR already contains AdEvent — do not shade this in. -->
+        <dependency>
+            <groupId>org.example</groupId>
+            <artifactId>CcFlinkEventWindow</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 
     <build>

@@ -1,0 +1,5 @@
+org/example/scylla/ScyllaSinkConfig$1.class
+org/example/scylla/example/AdEventScyllaSink.class
+org/example/scylla/ScyllaSinkConfig$Builder.class
+org/example/scylla/ScyllaSinkConfig.class
+org/example/scylla/ScyllaSink.class
