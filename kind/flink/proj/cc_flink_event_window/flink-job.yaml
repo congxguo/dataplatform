@@ -20,6 +20,7 @@ spec:
     restart-strategy: "none"
     # This prevents Flink from hiding Hadoop classes from the Iceberg connector
     classloader.parent-first-check.origins: "org.apache.hadoop,org.apache.iceberg"
+    taskmanager.numberOfTaskSlots: "1" 
   podTemplate:
       spec:
         containers:
@@ -33,14 +34,16 @@ spec:
                 value: "us-east-1"
   jobManager:
     resource:
-      memory: "1024m"
+      memory: "2048m"
       cpu: 1
   taskManager:
     resource:
-      memory: "1024m"
+      memory: "2048m"
       cpu: 1
   job:
-    jarURI: s3://flink/jars/CcFlinkEventWindow-1.0-SNAPSHOT.jar
-    entryClass: org.example.EventTimeSlidingWindowJob
-    parallelism: 2
+    #jarURI: s3://flink/jars/flink-kafka-sliding-window-job.jar
+    jarURI: s3://flink/jars/flink-kafka-sliding-window-job.jar
+    # entryClass: org.example.EventTimeSlidingWindowJob
+    entryClass: org.example.KafkaEventTimeSlidingWindowJob
+    parallelism: 3
     upgradeMode: stateless

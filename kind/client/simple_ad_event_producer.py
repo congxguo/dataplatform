@@ -49,7 +49,7 @@ def generate_ad_event() -> dict:
     return {
         "event_id": str(uuid.uuid4()),
         "campaign_id": random.choice(
-            ["campaign_001", "campaign_002", "campaign_003"]
+            ["campaign_001", "campaign_002", "campaign_003", "campaign_004", "campaign_005", "campaign_006", "campaign_007"]
         ),
         "user_id": f"user_{random.randint(1,10)}",
         "event_type": random.choice(

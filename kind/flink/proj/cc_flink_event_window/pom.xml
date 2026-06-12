@@ -69,14 +69,17 @@ under the License.
        </dependency>
        <!-- Add connector dependencies here. They must be in the default scope (compile). -->
 
-       <!-- Example:
-
        <dependency>
           <groupId>org.apache.flink</groupId>
           <artifactId>flink-connector-kafka</artifactId>
-          <version>${flink.version}</version>
+          <version>3.0.2-1.17</version>
        </dependency>
-       -->
+
+       <dependency>
+          <groupId>com.fasterxml.jackson.core</groupId>
+          <artifactId>jackson-databind</artifactId>
+          <version>2.14.2</version>
+       </dependency>
 
        <!-- Flink Table API dependencies -->
        <dependency>
@@ -300,6 +303,42 @@ under the License.
                          <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
                          <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                             <mainClass>org.example.WindowedAggregationJob</mainClass>
+                         </transformer>
+                      </transformers>
+                   </configuration>
+                </execution>
+
+                <!-- Kafka Event Time Sliding Window Job JAR -->
+                <execution>
+                   <id>kafka-sliding-window-job</id>
+                   <phase>package</phase>
+                   <goals>
+                      <goal>shade</goal>
+                   </goals>
+                   <configuration>
+                      <finalName>flink-kafka-sliding-window-job</finalName>
+                      <createDependencyReducedPom>false</createDependencyReducedPom>
+                      <artifactSet>
+                         <excludes>
+                            <exclude>com.google.code.findbugs:jsr305</exclude>
+                            <exclude>org.slf4j:*</exclude>
+                            <exclude>org.apache.logging.log4j:*</exclude>
+                         </excludes>
+                      </artifactSet>
+                      <filters>
+                         <filter>
+                            <artifact>*:*</artifact>
+                            <excludes>
+                               <exclude>META-INF/*.SF</exclude>
+                               <exclude>META-INF/*.DSA</exclude>
+                               <exclude>META-INF/*.RSA</exclude>
+                            </excludes>
+                         </filter>
+                      </filters>
+                      <transformers>
+                         <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
+                         <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                            <mainClass>org.example.KafkaEventTimeSlidingWindowJob</mainClass>
                          </transformer>
                       </transformers>
                    </configuration>
